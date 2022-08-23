@@ -22,5 +22,17 @@ resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
   kind: 'app,linux,container'
 }
 
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
+  name: 'PoCContainerRegistry'
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+
 
 
