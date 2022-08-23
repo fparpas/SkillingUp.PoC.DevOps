@@ -23,7 +23,7 @@ resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
 }
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
-  name: 'PoCContainerRegistry'
+  name: 'PoCSkillingUpContainerRegistry'
   location: location
   sku: {
     name: 'Basic'
