@@ -1,4 +1,4 @@
-param location string = resourceGroup().location // Location for all resources
+param location string = resourceGroup().location // Location for all resources 
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   name: 'AppServicePlanDevOpsDemo'
@@ -8,7 +8,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   }
   sku: {
     name: 'S1'
-    capacity: 2
+    capacity: 1
   }
   kind: 'linux'
 }
