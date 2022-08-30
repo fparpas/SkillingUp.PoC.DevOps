@@ -3,10 +3,22 @@ on:
      branches: 
       - main
     
-name: Container Push
+name: Container Build - Test - Push
 
 jobs:
-    build-and-deploy:
+ build-and-test:
+    runs-on: ubuntu-latest
+    name: Dotnet Side by Side testing sample
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            6.0
+      - run: dotnet build BlazorAppTest
+      - run: dotnet test TestProject
+ build-docker-and-deploy:
         runs-on: ubuntu-latest
         steps:
         # checkout the repo
@@ -28,3 +40,5 @@ jobs:
         - run: |
             docker build ./BlazorAppTest -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}
+            
+            
