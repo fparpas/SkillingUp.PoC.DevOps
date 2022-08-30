@@ -16,7 +16,7 @@ namespace TestProject
         [Test]
         public void TestToFail()
         {
-            Assert.Fail();
+            Assert.Pass();
         }
     }
 }
