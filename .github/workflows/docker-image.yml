@@ -1,7 +1,7 @@
-on: 
-    pull_request:
-     branches: 
-      - fparpas-patch-1
+on:
+  push:
+    branches:
+    - pparpas-patch-1
     
 name: Container Build - Test - Push
 
