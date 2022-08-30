@@ -8,7 +8,7 @@ name: Container Build - Test - Push
 jobs:
  build-and-test:
     runs-on: ubuntu-latest
-    name: Dotnet Side by Side testing sample
+    name: Dotnet Build and Test
     steps:
       - uses: actions/checkout@v3
       - name: Setup dotnet
@@ -20,6 +20,7 @@ jobs:
       - run: dotnet test TestProject
  build-docker-and-deploy:
         runs-on: ubuntu-latest
+        name: Build Docker Image and Push to Registry
         steps:
         # checkout the repo
         - name: 'Checkout GitHub Action'
