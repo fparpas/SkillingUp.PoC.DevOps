@@ -22,6 +22,17 @@ resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
   kind: 'app,linux,container'
 }
 
+resource Staging 'Microsoft.Web/sites/slots@2022-03-01' = {
+  name: 'appservicewebappdevopsdemo/Staging'
+  kind: 'app,linux'
+  location: location
+  properties: {
+    serverFarmId: appServicePlan.id
+    }
+
+}
+
+
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-06-01-preview' = {
   name: 'PoCSkillingUpContainerRegistry'
   location: location
