@@ -1,0 +1,76 @@
+on:
+  push:
+    branches:
+    - main
+    
+name: Container Build - Test - Push
+
+jobs:
+ build-and-test:
+    runs-on: ubuntu-latest
+    name: Dotnet Build and Test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            6.0
+      - run: dotnet build BlazorAppTest
+      - run: dotnet test TestProject
+ build-docker-and-deploy:
+        runs-on: ubuntu-latest
+        needs: [build-and-test]
+        name: Build Docker Image and Push to Registry
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+          
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+          
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        - run: |
+            docker build ./BlazorAppTest -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}
+ deploy-staging:
+        runs-on: ubuntu-latest
+        needs: [build-docker-and-deploy]
+        environment: Staging
+        name: Deploy to Staging
+        steps:
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - name: 'Login via Azure CLI'
+          uses: azure/webapps-deploy@v2      
+          with:
+            app-name: 'AppServiceWebAppDevOpsDemo'             
+            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}
+ deploy-production:
+        runs-on: ubuntu-latest
+        needs: [deploy-staging]
+        environment: Production
+        name: Deploy to Production
+        steps:
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - name: 'Login via Azure CLI'
+          uses: azure/webapps-deploy@v2      
+          with:
+            app-name: 'AppServiceWebAppDevOpsDemo'             
+            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdemo:${{ github.sha }}  
