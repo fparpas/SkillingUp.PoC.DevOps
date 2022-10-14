@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-    - fparpas-patch-1
+    - main
     
 name: Container Build - Test - Push
 
